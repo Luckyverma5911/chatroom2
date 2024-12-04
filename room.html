@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #FAFAFA;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            background-color: white;
+            border: 1px solid #DBDBDB;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 400px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid #DBDBDB;
+            text-align: center;
+            font-weight: 600;
+            color: #262626;
+            background-color: #FFFFFF;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background-color: #FAFAFA;
+        }
+        .message {
+            margin-bottom: 1rem;
+        }
+        .message strong {
+            color: #262626;
+        }
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-top: 1px solid #DBDBDB;
+            background-color: #FFFFFF;
+        }
+        .message-input {
+            flex: 1;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 1rem;
+            background-color: #EFEFEF;
+            outline: none;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+        .send-btn {
+            background-color: #0095F6;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .send-btn:hover {
+            background-color: #0078E4;
+        }
+        .send-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            Room: <span id="room-name" class="text-blue-600"></span>
+        </div>
+        
+        <div id="chat-box" class="chat-messages"></div>
+        
+        <div class="chat-footer">
+            <input 
+                type="text" 
+                id="message" 
+                placeholder="Message..." 
+                class="message-input"
+            >
+            <button onclick="sendMessage()" class="send-btn">➤</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io(); // Initialize socket.io
+        const username = localStorage.getItem('username');
+        const roomName = window.location.pathname.split('/')[2];
+
+        document.getElementById('room-name').innerText = roomName;
+
+        // Join the room
+        socket.emit('joinRoom', roomName);
+
+        // Send a message
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            if (message.trim() !== '') {
+                socket.emit('chatMessage', { username, roomName, message });
+                document.getElementById('message').value = '';
+            }
+        }
+
+        // Listen for incoming chat messages
+        socket.on('chatMessage', (data) => {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `
+                <div class="message">
+                    <strong>${data.username}</strong>: ${data.message}
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+</html>
