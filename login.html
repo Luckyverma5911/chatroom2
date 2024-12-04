@@ -1,0 +1,26 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Enter your name">
+    <button onclick="login()">Login</button>
+
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            if (username.trim() === '') {
+                alert('Please enter your name');
+                return;
+            }
+            localStorage.setItem('username', username);  // Save username in localStorage
+            window.location.href = 'room-options.html';   // Redirect to room options page
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create/Join Room</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #F3F4F6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .container {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 500px;
+    }
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1F2937;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #374151;
+      margin: 1rem 0;
+    }
+    .input-field {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .input-field:focus {
+      border-color: #3B82F6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    .btn {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #3B82F6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 1rem;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #2563EB;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 class="title">Welcome, <span id="username" class="text-blue-600"></span></h2>
+    
+    <h3 class="section-title">1. Create Room</h3>
+    <input 
+      type="text" 
+      id="room-name" 
+      placeholder="Enter room name" 
+      class="input-field" 
+    />
+    <input 
+      type="password" 
+      id="room-password" 
+      placeholder="Enter room password" 
+      class="input-field" 
+    />
+    <button 
+      onclick="createRoom()" 
+      class="btn"
+    >
+      Create Room
+    </button>
+
+    <h3 class="section-title">2. Join Room</h3>
+    <input 
+      type="text" 
+      id="join-room-name" 
+      placeholder="Enter room name" 
+      class="input-field" 
+    />
+    <input 
+      type="password" 
+      id="join-room-password" 
+      placeholder="Enter room password" 
+      class="input-field" 
+    />
+    <button 
+      onclick="joinRoom()" 
+      class="btn"
+    >
+      Join Room
+    </button>
+  </div>
+
+  <script>
+    // Get username from localStorage
+    document.getElementById('username').innerText = localStorage.getItem('username');
+
+    function createRoom() {
+      const roomName = document.getElementById('room-name').value;
+      const roomPassword = document.getElementById('room-password').value;
+
+      if (roomName.trim() === '' || roomPassword.trim() === '') {
+        alert('Please enter valid room details');
+        return;
+      }
+
+      // Save room details in localStorage (you can also use a database here)
+      localStorage.setItem('roomName', roomName);
+      localStorage.setItem('roomPassword', roomPassword);
+
+      alert(`Room "${roomName}" created!`);
+      window.location.href = `/room/${roomName}`;  // Redirect to the room page
+    }
+
+    function joinRoom() {
+      const roomName = document.getElementById('join-room-name').value;
+      const roomPassword = document.getElementById('join-room-password').value;
+
+      // Get room details from localStorage
+      const savedRoomName = localStorage.getItem('roomName');
+      const savedRoomPassword = localStorage.getItem('roomPassword');
+
+      if (roomName === savedRoomName && roomPassword === savedRoomPassword) {
+        alert('Joined the room successfully!');
+        window.location.href = `/room/${roomName}`;  // Redirect to the room page
+      } else {
+        alert('Incorrect room name or password');
+      }
+    }
+  </script>
+</body>
+</html>
